@@ -7,9 +7,9 @@ import PyPDF2
 import re
 import datetime
 import random
-# import smtplib  # Email functionality removed
-# from email.mime.multipart import MIMEMultipart  # Email functionality removed
-# from email.mime.text import MIMEText  # Email functionality removed
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from dotenv import load_dotenv
 import traceback
 import logging
@@ -22,10 +22,38 @@ logger = logging.getLogger(__name__)
 print("Working Directory:", os.getcwd())
 print("Env file exists:", os.path.exists(".env"))
 
-# Load environment variables
-load_dotenv(verbose=True)
+# Load environment variables with explicit encoding and error handling
+try:
+    # Try UTF-8 first
+    if not os.path.exists(".env"):
+        raise FileNotFoundError(".env file not found")
+        
+    with open(".env", "r", encoding="utf-8") as env_file:
+        content = env_file.read()
+        if not content.strip():
+            raise ValueError(".env file is empty")
+        logger.info("Successfully read .env file")
+    
+    load_dotenv(encoding='utf-8', override=True)
+    
+    # Verify credentials were loaded
+    if not all([os.getenv('GMAIL_USER'), os.getenv('GMAIL_APP_PASSWORD')]):
+        raise ValueError("Required environment variables not found in .env")
+    
+    logger.info("Successfully loaded environment variables")
+    
+except Exception as e:
+    logger.error(f"Error loading .env file: {str(e)}")
+    logger.error(f"Error type: {type(e).__name__}")
+    logger.error(f"Error traceback: {traceback.format_exc()}")
+    logger.info("Continuing without environment variables")
 
 # Debug environment variables removed as they were related to email
+
+# Get email credentials from environment variables
+GMAIL_USER = os.getenv('GMAIL_USER')
+GMAIL_APP_PASSWORD = os.getenv('GMAIL_APP_PASSWORD')
+COMPANY_NAME = os.getenv('COMPANY_NAME', 'Our Company')
 
 # Update the paths for job descriptions and resumes
 job_file_path = './job_description.csv'
@@ -151,6 +179,94 @@ def generate_interview_options(candidate_name, job_title):
         "dates": selected_dates,
         "times": selected_times
     }
+
+def get_role_specific_content(job_title):
+    """Generate role-specific email content"""
+    role_content = {
+        "Software Engineer": """
+We are particularly impressed with your technical background and would like to discuss your experience in software development.
+During the interview, we'll explore your programming skills and problem-solving abilities.""",
+        
+        "Data Scientist": """
+We are excited to discuss your experience in data analysis and machine learning.
+The interview will include conversations about your analytical skills and past projects.""",
+        
+        "Product Manager": """
+We look forward to discussing your experience in product development and strategic planning.
+The interview will focus on your leadership approach and product vision.""",
+        
+        "DevOps Engineer": """
+We're keen to explore your experience with cloud infrastructure and automation.
+The interview will cover your expertise in CI/CD pipelines and infrastructure management."""
+    }
+    
+    return role_content.get(job_title, """
+We are impressed with your qualifications and would like to discuss your experience in more detail.
+The interview will help us better understand your skills and how they align with our requirements.""")
+
+def send_interview_email(candidate_name, email, job_title, dates, times):
+    """Send interview invitation email to candidate"""
+    if not all([GMAIL_USER, GMAIL_APP_PASSWORD]):
+        logger.warning("Email credentials not found in .env file")
+        return False
+    
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = f"{COMPANY_NAME} HR <{GMAIL_USER}>"
+        msg['To'] = email
+        msg['Subject'] = f"Interview Invitation for {job_title} Position - {COMPANY_NAME}"
+        
+        # Get role-specific content
+        role_content = get_role_specific_content(job_title)
+        
+        body = f"""Dear {candidate_name},
+
+Thank you for applying for the {job_title} position at {COMPANY_NAME}. We are pleased to inform you that your profile has been shortlisted for the next round of our hiring process.
+
+{role_content}
+
+We would like to schedule an interview at your convenience. Here are the available slots:
+
+"""
+        # Add formatted dates and times
+        for date in dates:
+            body += f"\nDate: {date}"
+            body += "\nAvailable times:"
+            for time in times:
+                body += f"\n- {time}"
+            body += "\n"
+        
+        body += f"""
+Please reply to this email with your preferred slot from the above options. If none of these times work for you, please suggest alternative times that would be more convenient.
+
+Interview Format:
+- Duration: 45-60 minutes
+- Mode: Video Conference (link will be shared upon confirmation)
+- Please have a stable internet connection and a quiet environment
+
+What to Prepare:
+1. An updated copy of your resume
+2. Any relevant portfolio or work samples
+3. Questions you may have about the role or company
+
+Best regards,
+HR Team
+{COMPANY_NAME}
+"""
+        
+        msg.attach(MIMEText(body, 'plain'))
+        
+        # Create SMTP session and send email
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            server.starttls()
+            server.login(GMAIL_USER, GMAIL_APP_PASSWORD)
+            server.send_message(msg)
+            logger.info(f"Successfully sent interview invitation to {email}")
+        
+        return True
+    except Exception as e:
+        logger.error(f"Failed to send email to {email}: {str(e)}")
+        return False
 
 # Process resumes silently without displaying info messages
 def process_resumes_silently():
@@ -285,6 +401,15 @@ if show_results:
                     for time in interview_options["times"]:
                         st.write(f"- {time}")
                 
+                # Send interview email
+                if email != "Not found":
+                    if send_interview_email(name, email, selected_job_title, 
+                                         interview_options["dates"], 
+                                         interview_options["times"]):
+                        st.success(f"Interview invitation sent to {email}")
+                    else:
+                        st.error(f"Failed to send interview invitation to {email}")
+                
                 st.write("---")
         else:
             st.write("No candidates found for this job title.")
@@ -292,4 +417,4 @@ if show_results:
         st.write("Job title not found in the database.")
 
 # Close database connection when app is done
-conn.close() 
+conn.close()
