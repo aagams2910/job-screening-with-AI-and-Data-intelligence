@@ -1,94 +1,111 @@
 # Job Screening with AI and Data Intelligence
 
 ## Overview
-This application is an AI-powered job screening system that helps match candidates with job openings based on their resumes. The system uses natural language processing to extract information from CVs and job descriptions, calculates match scores, and suggests suitable interview date and time.
+A modern AI-powered job screening system that helps match candidates with job openings using an intuitive React interface. The system leverages natural language processing to analyze resumes and job descriptions, calculating match scores and suggesting optimal interview slots.
 
 ## Features
-- **CV Processing**: Extract key information from candidate resumes
-- **Job Description Analysis**: Parse job descriptions to identify key requirements
-- **Matching Algorithm**: Score candidates based on skill and experience match
-- **Candidate Shortlisting**: Automatically identify top candidates for each position
-- **Interview Suggestions**: Generate suggested interview dates and times
+- **Smart CV Analysis**: Extract key information from candidate resumes using AI
+- **Intelligent Job Matching**: Parse job descriptions and match with candidate profiles
+- **Advanced Scoring**: Dynamic scoring algorithm with adjustable thresholds
+- **Real-time Filtering**: Interactive candidate filtering and sorting
+- **Automated Interview Scheduling**: Smart interview time slot suggestions
+- **Modern UI/UX**: Responsive design with smooth animations and transitions
+- **Email Integration**: Automated interview invitation system
 
 ## Technology Stack
-- **Frontend**: Streamlit
-- **Backend**: Python
-- **Database**: SQLite
+### Frontend
+- **Framework**: React with TypeScript
+- **Styling**: Tailwind CSS
+- **UI Components**: shadcn/ui
+- **State Management**: React Query
+- **Animations**: CSS animations & transitions
+- **HTTP Client**: Axios
+
+### Backend
+- **Runtime**: Python
+- **Framework**: Flask with CORS support
+- **Database**: SQLite with SQLAlchemy
+- **AI/ML**: LangChain for NLP
+- **PDF Processing**: PyPDF2
+- **Data Processing**: Pandas
 
 ## Setup Instructions
 
 ### Prerequisites
-- Python 3.7+
+- Node.js 18+
+- Python 3.8+
 - pip (Python package manager)
 
 ### Installation
+
 1. Clone the repository:
-   ```
+   ```bash
    git clone https://github.com/aagams2910/job-screening-with-AI-and-Data-intelligence.git
    cd job-screening-with-AI-and-Data-intelligence
    ```
 
-2. Install dependencies:
-   ```
+2. Backend Setup:
+   ```bash
    pip install -r requirements.txt
    ```
 
-### Data Setup
-1. Resume Files: Place candidate PDF resumes in the `CVs1` directory
-2. Job Descriptions: Use the existing `job_description.csv` or create your own with the same format
-
-## Usage
-1. Run the application:
-   ```
-   streamlit run main.py
+3. Frontend Setup:
+   ```bash
+   cd frontend
+   npm install
    ```
 
-2. Using the web interface:
-   - Select a job title from the dropdown
-   - Click "Find Top Candidates" to see matching candidates
-   - View suggested interview dates and times for each candidate
+### Running the Application
+
+1. Start the backend server:
+   ```bash
+   python main.py
+   ```
+
+2. Start the frontend development server:
+   ```bash
+   cd frontend
+   npm run dev
+   ```
+
+The application will be available at `http://localhost:6969`
 
 ## Project Structure
 ```
 .
-├── main.py                 # Core application file with Streamlit UI
-├── requirements.txt        # Python dependencies
-├── .env                    # Environment variables and configuration
-├── .gitignore             # Git ignore rules
+├── frontend/                # React frontend application
+│   ├── src/
+│   │   ├── components/     # React components
+│   │   ├── services/       # API services
+│   │   ├── types/         # TypeScript types
+│   │   └── hooks/         # Custom React hooks
+│   └── public/            # Static assets
 │
-├── CVs1/                  # Directory for candidate resumes
-│   └── *.pdf             # PDF resume files
+├── backend/
+│   ├── main.py           # Flask application
+│   ├── database/         # Database models and migrations
+│   └── utils/           # Helper functions
 │
-├── database/              # Database related files
-│   └── schema.sql        # SQL schema definitions
-│
-├── utils/                 # Utility functions and helpers
-│   └── __init__.py       # Utils package initialization
-│
-├── data/                  # Data storage
-│   └── job_screening.db  # SQLite database file
-│
-└── job_description.csv    # Job listings and descriptions
-
+├── CVs1/                # Resume storage
+├── data/               # Application data
+└── requirements.txt    # Python dependencies
 ```
 
-### Key Components
-- **Application Core**
-  - `main.py`: Main application logic, UI, and screening algorithms
-  - `requirements.txt`: Project dependencies
-  - `.env`: Configuration settings and API keys
+## Key Features Implementation
 
-- **Data Storage**
-  - `database/`: Database schemas and migrations
-  - `data/`: Runtime data storage
-  - `job_description.csv`: Job listing data
+### Frontend
+- Modern, responsive UI with shadcn/ui components
+- Real-time candidate filtering and sorting
+- Interactive match score visualization
+- Smooth animations and transitions
+- Dark mode support
+- Toast notifications for actions
 
-- **Resume Management**
-  - `CVs1/`: Storage for candidate resume PDFs
-  - Supports PDF format for resume processing
-
-- **Utilities**
-  - `utils/`: Helper functions and shared code
-  - Contains reusable components and functions
+### Backend
+- RESTful API endpoints for all operations
+- AI-powered resume analysis
+- Smart candidate-job matching algorithm
+- Automated email system for interview invitations
+- Secure file upload handling
 
 
