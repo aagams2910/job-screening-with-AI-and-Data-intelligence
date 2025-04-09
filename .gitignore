@@ -7,6 +7,9 @@ __pycache__/
 venv/
 env/
 ENV/
+.venv/
+.env/
+.python-version
 
 # Distribution / packaging
 dist/
@@ -17,27 +20,149 @@ build/
 # Database files
 *.db
 *.sqlite3
+*.sqlite
 
 # Environment variables
 .env
+.env.local
+.env.*.local
 
 # Logs
 logs/
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # IDE specific files
 .idea/
 .vscode/
 *.swp
 *.swo
+*.sublime-workspace
+*.sublime-project
+*.project
+.settings/
+.classpath
 
 # OS specific files
 .DS_Store
 Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
 
 # Generated data files
 data/
 job_screening.db
+__generated__/
 
 # PDF files and CVs
-CVs1/ 
+CVs1/
+*.pdf
+
+# Node.js
+node_modules/
+.npm/
+.yarn/
+.pnp.*
+coverage/
+.next/
+.nuxt/
+.cache/
+.parcel-cache/
+*.tsbuildinfo
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.nox/
+
+# Temp files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+._*
+
+# Local development
+.local/
+.history/
+.vercel
+.netlify
+
+# Compiled files
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.dll
+*.dylib
+*.class
+*.exe
+*.o
+*.a
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Sensitive or personal files
+credentials.json
+token.json
+auth.json
+secrets.yaml
+config.local.js
+
+# Ignore everything except core project files
+*
+!frontend/
+!frontend/src/
+!frontend/src/components/
+!frontend/src/services/
+!frontend/src/types/
+!frontend/src/hooks/
+!frontend/public/
+!frontend/src/**/*.tsx
+!frontend/src/**/*.ts
+!frontend/src/**/*.css
+!frontend/public/**/*
+
+!backend/
+!backend/main.py
+!backend/database/
+!backend/database/**/*.py
+!backend/utils/
+!backend/utils/**/*.py
+
+!CVs1/
+!CVs1/**/*.pdf
+
+!data/
+!data/**/*.csv
+!data/**/*.json
+
+!requirements.txt
+!.gitignore
+!README.md
+
+# But still ignore these even if they match above patterns
+*.pyc
+__pycache__/
+node_modules/
+.env
+.env.*
+*.log
+.DS_Store
